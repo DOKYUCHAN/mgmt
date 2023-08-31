@@ -15,7 +15,7 @@ export class ManagerRepository {
     private readonly logger: LoggerService,
   ) {}
 
-  async insertData(createManagerDto: CreateManagerDto): Promise<Manager> {
+  async createData(createManagerDto: CreateManagerDto): Promise<Manager> {
     try {
       const inserted = await this.managerRepo
         .createQueryBuilder()
@@ -28,7 +28,7 @@ export class ManagerRepository {
       const result = plainToInstance(Manager, inserted.raw[0]);
       return result;
     } catch (err) {
-      this.logger.error(err, `[manager/manager.repository/insertData] insertData error!`);
+      this.logger.error(this.createData.name, err, 'createData error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
@@ -54,12 +54,12 @@ export class ManagerRepository {
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[manager/manager.repository/findData] findData error!`);
+      this.logger.error(this.findData.name, err, 'findData error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
 
-  async findDataByManagerId(managerId: string): Promise<any> {
+  async findDataById(id: string): Promise<any> {
     try {
       const result = await this.managerRepo
         .createQueryBuilder()
@@ -76,59 +76,47 @@ export class ManagerRepository {
           `,
         )
         .innerJoin(`Manager.mgmt_item_id`, 'MgmtItem')
-        .where('"Manager"."manager_id" = :managerId', { managerId })
+        .where('"Manager"."manager_id" = :id', { id })
         .getRawOne();
 
       return result;
     } catch (err) {
-      this.logger.error(
-        err,
-        `[manager/manager.repository/findDataByManagerId] findDataByManagerId error!`,
-      );
+      this.logger.error(this.findDataById.name, err, 'findDataById error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
 
-  async updateDataByManagerId(
-    managerId: string,
-    updateManagerDto: UpdateManagerDto,
-  ): Promise<Manager> {
+  async updateDataById(id: string, updateManagerDto: UpdateManagerDto): Promise<Manager> {
     try {
       const updated = await this.managerRepo
         .createQueryBuilder()
         .update()
         .set(updateManagerDto)
-        .where('"Manager"."manager_id" = :managerId', { managerId })
+        .where('"Manager"."manager_id" = :id', { id })
         .returning('*')
         .execute();
 
       const result = plainToInstance(Manager, updated.raw[0]);
       return result;
     } catch (err) {
-      this.logger.error(
-        err,
-        `[manager/manager.repository/updateDataByManagerId] updateDataByManagerId error!`,
-      );
+      this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
 
-  async deleteDataByManagerId(managerId: string): Promise<Manager> {
+  async deleteDataById(id: string): Promise<Manager> {
     try {
       const deleted = await this.managerRepo
         .createQueryBuilder()
         .softDelete()
-        .where('"Manager"."manager_id" = :managerId', { managerId })
+        .where('"Manager"."manager_id" = :id', { id })
         .returning('*')
         .execute();
 
       const result = plainToInstance(Manager, deleted.raw[0]);
       return result;
     } catch (err) {
-      this.logger.error(
-        err,
-        `[manager/manager.repository/deleteDataByManagerId] deleteDataByManagerId error!`,
-      );
+      this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }

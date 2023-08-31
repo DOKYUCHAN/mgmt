@@ -47,7 +47,7 @@ export class MgmtTypeController {
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[mgmtType/mgmtType.controller/createData] createData error!`);
+      this.logger.error(this.createData.name, err, 'createData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -65,10 +65,9 @@ export class MgmtTypeController {
     try {
       const result: IApiResult<MgmtType[]> = await this.mgmtTypeService.findData();
 
-      console.log(result);
       return result;
     } catch (err) {
-      this.logger.error(err, `[mgmtType/mgmtType.controller/findData] findData error!`);
+      this.logger.error(this.findData.name, err, 'findData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -81,15 +80,13 @@ export class MgmtTypeController {
   @ApiParam({ name: 'id', required: true, description: '관리유형UUID' })
   @CustomApiResponse(MgmtTypeDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  async findDataById(@Param('id', ParseUUIDPipe) mgmtTypeId: string) {
+  async findDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<MgmtType> = await this.mgmtTypeService.findDataByMgmtTypeId(
-        mgmtTypeId,
-      );
+      const result: IApiResult<MgmtType> = await this.mgmtTypeService.findDataById(id);
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[mgmtType/mgmtType.controller/findDataById] findDataById error!`);
+      this.logger.error(this.findDataById.name, err, 'findDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -109,22 +106,19 @@ export class MgmtTypeController {
   })
   @CustomApiResponse(MgmtTypeDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  async updateData(
-    @Param('id', ParseUUIDPipe) mgmtTypeId: string,
+  async updateDataById(
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateMgmtTypeDto: UpdateMgmtTypeDto,
   ) {
     try {
-      const result: IApiResult<MgmtType> = await this.mgmtTypeService.updateDataByMgmtTypeId(
-        mgmtTypeId,
+      const result: IApiResult<MgmtType> = await this.mgmtTypeService.updateDataById(
+        id,
         updateMgmtTypeDto,
       );
 
       return result;
     } catch (err) {
-      this.logger.error(
-        err,
-        `[mgmtType/mgmtType.controller/updateDataByMgmtTypeId] updateDataByMgmtTypeId error!`,
-      );
+      this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -139,15 +133,13 @@ export class MgmtTypeController {
   @ApiParam({ name: 'id', required: true, description: '관리유형UUID' })
   @CustomApiResponse(MgmtTypeDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  async deleteData(@Param('id', ParseUUIDPipe) mgmtTypeId: string) {
+  async deleteDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<MgmtType> = await this.mgmtTypeService.deleteDataByMgmtTypeId(
-        mgmtTypeId,
-      );
+      const result: IApiResult<MgmtType> = await this.mgmtTypeService.deleteDataById(id);
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[mgmtType/mgmtType.controller/deleteData] deleteData error!`);
+      this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }

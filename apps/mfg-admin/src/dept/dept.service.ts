@@ -17,10 +17,10 @@ export class DeptService {
 
   async createData(createDeptDto: CreateDeptDto): Promise<IApiResult<Dept>> {
     try {
-      const result = await this.deptRepository.insertData(createDeptDto);
+      const result = await this.deptRepository.createData(createDeptDto);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[dept/dept.service/createDept] createDept error!`);
+      this.logger.error(this.createData.name, err, 'createData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -31,40 +31,37 @@ export class DeptService {
       console.log(result);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[dept/dept.service/findDept] findDept error!`);
+      this.logger.error(this.findData.name, err, 'findData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
 
-  async findDataByDeptId(deptId: string): Promise<IApiResult<Dept>> {
+  async findDataById(id: string): Promise<IApiResult<Dept>> {
     try {
-      const result = await this.deptRepository.findDataByDeptId(deptId);
+      const result = await this.deptRepository.findDataById(id);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[dept/dept.service/findDeptByDeptId] findDeptByDeptId error!`);
+      this.logger.error(this.findDataById.name, err, 'findDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
 
-  async updateDataByDeptId(
-    deptId: string,
-    updateDeptDto: UpdateDeptDto,
-  ): Promise<IApiResult<Dept>> {
+  async updateDataById(id: string, updateDeptDto: UpdateDeptDto): Promise<IApiResult<Dept>> {
     try {
-      const result = await this.deptRepository.updateDataByDeptId(deptId, updateDeptDto);
+      const result = await this.deptRepository.updateDataById(id, updateDeptDto);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[dept/dept.service/updateDeptByDeptId] updateDeptByDeptId error!`);
+      this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
 
-  async deleteDataByDeptId(deptId: string): Promise<IApiResult<Dept>> {
+  async deleteDataById(id: string): Promise<IApiResult<Dept>> {
     try {
-      const result = await this.deptRepository.deleteDataByDeptId(deptId);
+      const result = await this.deptRepository.deleteDataById(id);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[dept/dept.service/deleteDeptByDeptId] deleteDeptByDeptId error!`);
+      this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }

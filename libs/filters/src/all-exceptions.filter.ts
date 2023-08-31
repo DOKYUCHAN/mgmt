@@ -54,7 +54,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         createErrorLog(errLog);
       }
 
-      this.logger.error(exception, `[EXCEPTION_FILTER/ORIGIN_EXCEPTION]`);
+      this.logger.error(AllExceptionsFilter.name, exception, `[EXCEPTION_FILTER/ORIGIN_EXCEPTION]`);
     }
   }
 }

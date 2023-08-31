@@ -41,7 +41,7 @@ export class DeptController {
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[dept/dept.controller/createData] createData error!`);
+      this.logger.error(this.createData.name, err, 'createData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -61,7 +61,7 @@ export class DeptController {
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[dept/dept.controller/findData] findData error!`);
+      this.logger.error(this.findData.name, err, 'findData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -74,14 +74,13 @@ export class DeptController {
   @ApiParam({ name: 'id', required: true, description: '부서UUID' })
   @CustomApiResponse(DeptDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  async findDataById(@Param('id', ParseUUIDPipe) deptId: string) {
+  async findDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<Dept> = await this.deptService.findDataByDeptId(deptId);
+      const result: IApiResult<Dept> = await this.deptService.findDataById(id);
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[dept/dept.controller/findDataById] findDataById error!`);
-
+      this.logger.error(this.findDataById.name, err, 'findDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -101,20 +100,16 @@ export class DeptController {
   })
   @CustomApiResponse(DeptDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  async updateData(
-    @Param('id', ParseUUIDPipe) deptId: string,
+  async updateDataById(
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateDeptDto: UpdateDeptDto,
   ) {
     try {
-      const result: IApiResult<Dept> = await this.deptService.updateDataByDeptId(
-        deptId,
-        updateDeptDto,
-      );
+      const result: IApiResult<Dept> = await this.deptService.updateDataById(id, updateDeptDto);
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[dept/dept.controller/updateDataByDeptId] updateDataByDeptId error!`);
-
+      this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -129,14 +124,13 @@ export class DeptController {
   @ApiParam({ name: 'id', required: true, description: '부서UUID' })
   @CustomApiResponse(DeptDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  async deleteData(@Param('id', ParseUUIDPipe) deptId: string) {
+  async deleteDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<Dept> = await this.deptService.deleteDataByDeptId(deptId);
+      const result: IApiResult<Dept> = await this.deptService.deleteDataById(id);
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[dept/dept.controller/deleteData] deleteData error!`);
-
+      this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }

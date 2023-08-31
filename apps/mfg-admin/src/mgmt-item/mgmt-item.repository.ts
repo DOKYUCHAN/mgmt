@@ -15,7 +15,7 @@ export class MgmtItemRepository {
     private readonly logger: LoggerService,
   ) {}
 
-  async insertData(createMgmtItemDto: CreateMgmtItemDto): Promise<MgmtItem> {
+  async createData(createMgmtItemDto: CreateMgmtItemDto): Promise<MgmtItem> {
     try {
       const inserted = await this.mgmtItemRepo
         .createQueryBuilder()
@@ -28,7 +28,7 @@ export class MgmtItemRepository {
       const result = plainToInstance(MgmtItem, inserted.raw[0]);
       return result;
     } catch (err) {
-      this.logger.error(err, `[mgmtItem/mgmtItem.repository/insertData] insertData error!`);
+      this.logger.error(this.createData.name, err, 'createData error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
@@ -57,12 +57,12 @@ export class MgmtItemRepository {
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[mgmtItem/mgmtItem.repository/findData] findData error!`);
+      this.logger.error(this.findData.name, err, 'findData error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
 
-  async findDataByMgmtItemId(mgmtItemId: string): Promise<any> {
+  async findDataById(id: string): Promise<any> {
     try {
       const result = await this.mgmtItemRepo
         .createQueryBuilder()
@@ -82,59 +82,47 @@ export class MgmtItemRepository {
         )
         .innerJoin(`MgmtItem.team_id`, 'Team')
         .innerJoin(`MgmtItem.mgmt_type_id`, 'MgmtType')
-        .where('"MgmtItem"."mgmt_item_id" = :mgmtItemId', { mgmtItemId })
+        .where('"MgmtItem"."mgmt_item_id" = :id', { id })
         .getRawOne();
 
       return result;
     } catch (err) {
-      this.logger.error(
-        err,
-        `[mgmtItem/mgmtItem.repository/findDataByMgmtItemId] findDataByMgmtItemId error!`,
-      );
+      this.logger.error(this.findDataById.name, err, 'findDataById error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
 
-  async updateDataByMgmtItemId(
-    mgmtItemId: string,
-    updateMgmtItemDto: UpdateMgmtItemDto,
-  ): Promise<MgmtItem> {
+  async updateDataById(id: string, updateMgmtItemDto: UpdateMgmtItemDto): Promise<MgmtItem> {
     try {
       const updated = await this.mgmtItemRepo
         .createQueryBuilder()
         .update()
         .set(updateMgmtItemDto)
-        .where('"MgmtItem"."mgmt_item_id" = :mgmtItemId', { mgmtItemId })
+        .where('"MgmtItem"."mgmt_item_id" = :id', { id })
         .returning('*')
         .execute();
 
       const result = plainToInstance(MgmtItem, updated.raw[0]);
       return result;
     } catch (err) {
-      this.logger.error(
-        err,
-        `[mgmtItem/mgmtItem.repository/updateDataByMgmtItemId] updateDataByMgmtItemId error!`,
-      );
+      this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
 
-  async deleteDataByMgmtItemId(mgmtItemId: string): Promise<MgmtItem> {
+  async deleteDataById(id: string): Promise<MgmtItem> {
     try {
       const deleted = await this.mgmtItemRepo
         .createQueryBuilder()
         .softDelete()
-        .where('"MgmtItem"."mgmt_item_id" = :mgmtItemId', { mgmtItemId })
+        .where('"MgmtItem"."mgmt_item_id" = :id', { id })
         .returning('*')
         .execute();
 
       const result = plainToInstance(MgmtItem, deleted.raw[0]);
       return result;
     } catch (err) {
-      this.logger.error(
-        err,
-        `[mgmtItem/mgmtItem.repository/deleteDataByMgmtItemId] deleteDataByMgmtItemId error!`,
-      );
+      this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }

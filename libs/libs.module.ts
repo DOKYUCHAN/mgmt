@@ -2,10 +2,9 @@ import { Module } from '@nestjs/common';
 
 import { CommonModule } from '@app/common';
 import { DatabaseModule } from '@app/database';
-import { LoggerModule } from '@app/common/logger';
 
 @Module({
-  imports: [CommonModule, DatabaseModule, LoggerModule],
-  exports: [CommonModule, DatabaseModule, LoggerModule],
+  imports: [CommonModule, DatabaseModule],
+  exports: [CommonModule, DatabaseModule],
 })
 export class LibsModule {}

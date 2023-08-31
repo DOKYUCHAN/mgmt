@@ -17,10 +17,10 @@ export class MgmtTypeService {
 
   async createData(createMgmtTypeDto: CreateMgmtTypeDto): Promise<IApiResult<MgmtType>> {
     try {
-      const result = await this.mgmtTypeRepository.insertData(createMgmtTypeDto);
+      const result = await this.mgmtTypeRepository.createData(createMgmtTypeDto);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[mgmtType/mgmtType.service/createMgmtType] createMgmtType error!`);
+      this.logger.error(this.createData.name, err, 'createData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -30,52 +30,40 @@ export class MgmtTypeService {
       const result = await this.mgmtTypeRepository.findData();
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[mgmtType/mgmtType.service/findMgmtType] findMgmtType error!`);
+      this.logger.error(this.findData.name, err, 'findData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
 
-  async findDataByMgmtTypeId(mgmtTypeId: string): Promise<IApiResult<MgmtType>> {
+  async findDataById(id: string): Promise<IApiResult<MgmtType>> {
     try {
-      const result = await this.mgmtTypeRepository.findDataByMgmtTypeId(mgmtTypeId);
+      const result = await this.mgmtTypeRepository.findDataById(id);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(
-        err,
-        `[mgmtType/mgmtType.service/findMgmtTypeByMgmtTypeId] findMgmtTypeByMgmtTypeId error!`,
-      );
+      this.logger.error(this.findDataById.name, err, 'findDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
 
-  async updateDataByMgmtTypeId(
-    mgmtTypeId: string,
+  async updateDataById(
+    id: string,
     updateMgmtTypeDto: UpdateMgmtTypeDto,
   ): Promise<IApiResult<MgmtType>> {
     try {
-      const result = await this.mgmtTypeRepository.updateDataByMgmtTypeId(
-        mgmtTypeId,
-        updateMgmtTypeDto,
-      );
+      const result = await this.mgmtTypeRepository.updateDataById(id, updateMgmtTypeDto);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(
-        err,
-        `[mgmtType/mgmtType.service/updateMgmtTypeByMgmtTypeId] updateMgmtTypeByMgmtTypeId error!`,
-      );
+      this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
 
-  async deleteDataByMgmtTypeId(mgmtTypeId: string): Promise<IApiResult<MgmtType>> {
+  async deleteDataById(id: string): Promise<IApiResult<MgmtType>> {
     try {
-      const result = await this.mgmtTypeRepository.deleteDataByMgmtTypeId(mgmtTypeId);
+      const result = await this.mgmtTypeRepository.deleteDataById(id);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(
-        err,
-        `[mgmtType/mgmtType.service/deleteMgmtTypeByMgmtTypeId] deleteMgmtTypeByMgmtTypeId error!`,
-      );
+      this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }

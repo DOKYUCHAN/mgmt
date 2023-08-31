@@ -17,10 +17,10 @@ export class TeamService {
 
   async createData(createTeamDto: CreateTeamDto): Promise<IApiResult<Team>> {
     try {
-      const result = await this.teamRepository.insertData(createTeamDto);
+      const result = await this.teamRepository.createData(createTeamDto);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[team/team.service/createTeam] createTeam error!`);
+      this.logger.error(this.createData.name, err, 'createData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -30,40 +30,37 @@ export class TeamService {
       const result = await this.teamRepository.findData();
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[team/team.service/findTeam] findTeam error!`);
+      this.logger.error(this.findData.name, err, 'findData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
 
-  async findDataByTeamId(teamId: string): Promise<IApiResult<any>> {
+  async findDataById(id: string): Promise<IApiResult<any>> {
     try {
-      const result = await this.teamRepository.findDataByTeamId(teamId);
+      const result = await this.teamRepository.findDataById(id);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[team/team.service/findTeamByTeamId] findTeamByTeamId error!`);
+      this.logger.error(this.findDataById.name, err, 'findDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
 
-  async updateDataByTeamId(
-    teamId: string,
-    updateTeamDto: UpdateTeamDto,
-  ): Promise<IApiResult<Team>> {
+  async updateDataById(id: string, updateTeamDto: UpdateTeamDto): Promise<IApiResult<Team>> {
     try {
-      const result = await this.teamRepository.updateDataByTeamId(teamId, updateTeamDto);
+      const result = await this.teamRepository.updateDataById(id, updateTeamDto);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[team/team.service/updateTeamByTeamId] updateTeamByTeamId error!`);
+      this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
 
-  async deleteDataByTeamId(teamId: string): Promise<IApiResult<Team>> {
+  async deleteDataById(id: string): Promise<IApiResult<Team>> {
     try {
-      const result = await this.teamRepository.deleteDataByTeamId(teamId);
+      const result = await this.teamRepository.deleteDataById(id);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[team/team.service/deleteTeamByTeamId] deleteTeamByTeamId error!`);
+      this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }

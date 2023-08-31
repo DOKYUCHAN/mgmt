@@ -41,7 +41,7 @@ export class TeamController {
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[team/team.controller/createData] createData error!`);
+      this.logger.error(this.createData.name, err, 'createData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -61,7 +61,7 @@ export class TeamController {
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[team/team.controller/findData] findData error!`);
+      this.logger.error(this.findData.name, err, 'findData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -74,13 +74,13 @@ export class TeamController {
   @ApiParam({ name: 'id', required: true, description: '팀UUID' })
   @CustomApiResponse(TeamDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  async findDataById(@Param('id', ParseUUIDPipe) teamId: string) {
+  async findDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<any> = await this.teamService.findDataByTeamId(teamId);
+      const result: IApiResult<any> = await this.teamService.findDataById(id);
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[team/team.controller/findDataById] findDataById error!`);
+      this.logger.error(this.findDataById.name, err, 'findDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -100,19 +100,16 @@ export class TeamController {
   })
   @CustomApiResponse(TeamDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  async updateData(
-    @Param('id', ParseUUIDPipe) teamId: string,
+  async updateDataById(
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTeamDto: UpdateTeamDto,
   ) {
     try {
-      const result: IApiResult<Team> = await this.teamService.updateDataByTeamId(
-        teamId,
-        updateTeamDto,
-      );
+      const result: IApiResult<Team> = await this.teamService.updateDataById(id, updateTeamDto);
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[team/team.controller/updateDataByTeamId] updateDataByTeamId error!`);
+      this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -127,13 +124,13 @@ export class TeamController {
   @ApiParam({ name: 'id', required: true, description: '팀UUID' })
   @CustomApiResponse(TeamDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  async deleteData(@Param('id', ParseUUIDPipe) teamId: string) {
+  async deleteDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<Team> = await this.teamService.deleteDataByTeamId(teamId);
+      const result: IApiResult<Team> = await this.teamService.deleteDataById(id);
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[team/team.controller/deleteData] deleteData error!`);
+      this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }

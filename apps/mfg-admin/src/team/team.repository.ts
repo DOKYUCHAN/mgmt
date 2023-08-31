@@ -15,7 +15,7 @@ export class TeamRepository {
     private readonly logger: LoggerService,
   ) {}
 
-  async insertData(createTeamDto: CreateTeamDto): Promise<Team> {
+  async createData(createTeamDto: CreateTeamDto): Promise<Team> {
     try {
       const inserted = await this.teamRepo
         .createQueryBuilder()
@@ -28,7 +28,7 @@ export class TeamRepository {
       const result = plainToInstance(Team, inserted.raw[0]);
       return result;
     } catch (err) {
-      this.logger.error(err, `[team/team.repository/insertData] insertData error!`);
+      this.logger.error(this.createData.name, err, 'createData error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
@@ -53,12 +53,12 @@ export class TeamRepository {
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[team/team.repository/findData] findData error!`);
+      this.logger.error(this.findData.name, err, 'findData error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
 
-  async findDataByTeamId(teamId: string): Promise<Team> {
+  async findDataById(id: string): Promise<Team> {
     try {
       const result = await this.teamRepo
         .createQueryBuilder()
@@ -74,47 +74,47 @@ export class TeamRepository {
           `,
         )
         .leftJoin(`Team.dept_id`, 'Dept')
-        .where('"Team"."team_id" = :teamId', { teamId })
+        .where('"Team"."team_id" = :id', { id })
         .getRawOne();
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[team/team.repository/findDataByTeamId] findDataByTeamId error!`);
+      this.logger.error(this.findDataById.name, err, 'findDataById error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
 
-  async updateDataByTeamId(teamId: string, updateTeamDto: UpdateTeamDto): Promise<Team> {
+  async updateDataById(id: string, updateTeamDto: UpdateTeamDto): Promise<Team> {
     try {
       const updated = await this.teamRepo
         .createQueryBuilder()
         .update()
         .set(updateTeamDto)
-        .where('"Team"."team_id" = :teamId', { teamId })
+        .where('"Team"."team_id" = :id', { id })
         .returning('*')
         .execute();
 
       const result = plainToInstance(Team, updated.raw[0]);
       return result;
     } catch (err) {
-      this.logger.error(err, `[team/team.repository/updateDataByTeamId] updateDataByTeamId error!`);
+      this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
 
-  async deleteDataByTeamId(teamId: string): Promise<Team> {
+  async deleteDataById(id: string): Promise<Team> {
     try {
       const deleted = await this.teamRepo
         .createQueryBuilder()
         .softDelete()
-        .where('"Team"."team_id" = :teamId', { teamId })
+        .where('"Team"."team_id" = :id', { id })
         .returning('*')
         .execute();
 
       const result = plainToInstance(Team, deleted.raw[0]);
       return result;
     } catch (err) {
-      this.logger.error(err, `[team/team.repository/deleteDataByTeamId] deleteDataByTeamId error!`);
+      this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }

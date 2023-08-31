@@ -47,7 +47,7 @@ export class MgmtItemController {
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[mgmtItem/mgmtItem.controller/createData] createData error!`);
+      this.logger.error(this.createData.name, err, 'createData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -67,7 +67,7 @@ export class MgmtItemController {
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[mgmtItem/mgmtItem.controller/findData] findData error!`);
+      this.logger.error(this.findData.name, err, 'findData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -80,13 +80,13 @@ export class MgmtItemController {
   @ApiParam({ name: 'id', required: true, description: '관리항목UUID' })
   @CustomApiResponse(MgmtItemDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  async findDataById(@Param('id', ParseUUIDPipe) mgmtItemId: string) {
+  async findDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<any> = await this.mgmtItemService.findDataByMgmtItemId(mgmtItemId);
+      const result: IApiResult<any> = await this.mgmtItemService.findDataById(id);
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[mgmtItem/mgmtItem.controller/findDataById] findDataById error!`);
+      this.logger.error(this.findDataById.name, err, 'findDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -106,22 +106,19 @@ export class MgmtItemController {
   })
   @CustomApiResponse(MgmtItemDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  async updateData(
-    @Param('id', ParseUUIDPipe) mgmtItemId: string,
+  async updateDataById(
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateMgmtItemDto: UpdateMgmtItemDto,
   ) {
     try {
-      const result: IApiResult<MgmtItem> = await this.mgmtItemService.updateDataByMgmtItemId(
-        mgmtItemId,
+      const result: IApiResult<MgmtItem> = await this.mgmtItemService.updateDataById(
+        id,
         updateMgmtItemDto,
       );
 
       return result;
     } catch (err) {
-      this.logger.error(
-        err,
-        `[mgmtItem/mgmtItem.controller/updateDataByMgmtItemId] updateDataByMgmtItemId error!`,
-      );
+      this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -136,15 +133,13 @@ export class MgmtItemController {
   @ApiParam({ name: 'id', required: true, description: '관리항목UUID' })
   @CustomApiResponse(MgmtItemDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  async deleteData(@Param('id', ParseUUIDPipe) mgmtItemId: string) {
+  async deleteDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<MgmtItem> = await this.mgmtItemService.deleteDataByMgmtItemId(
-        mgmtItemId,
-      );
+      const result: IApiResult<MgmtItem> = await this.mgmtItemService.deleteDataById(id);
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[mgmtItem/mgmtItem.controller/deleteData] deleteData error!`);
+      this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }

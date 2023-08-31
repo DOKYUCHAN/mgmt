@@ -17,10 +17,10 @@ export class ManagerService {
 
   async createData(createManagerDto: CreateManagerDto): Promise<IApiResult<Manager>> {
     try {
-      const result = await this.managerRepository.insertData(createManagerDto);
+      const result = await this.managerRepository.createData(createManagerDto);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[manager/manager.service/createManager] createManager error!`);
+      this.logger.error(this.createData.name, err, 'createData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
@@ -30,52 +30,40 @@ export class ManagerService {
       const result = await this.managerRepository.findData();
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(err, `[manager/manager.service/findManager] findManager error!`);
+      this.logger.error(this.findData.name, err, 'findData error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
 
-  async findDataByManagerId(managerId: string): Promise<IApiResult<any>> {
+  async findDataById(id: string): Promise<IApiResult<any>> {
     try {
-      const result = await this.managerRepository.findDataByManagerId(managerId);
+      const result = await this.managerRepository.findDataById(id);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(
-        err,
-        `[manager/manager.service/findManagerByManagerId] findManagerByManagerId error!`,
-      );
+      this.logger.error(this.findDataById.name, err, 'findDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
 
-  async updateDataByManagerId(
-    managerId: string,
+  async updateDataById(
+    id: string,
     updateManagerDto: UpdateManagerDto,
   ): Promise<IApiResult<Manager>> {
     try {
-      const result = await this.managerRepository.updateDataByManagerId(
-        managerId,
-        updateManagerDto,
-      );
+      const result = await this.managerRepository.updateDataById(id, updateManagerDto);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(
-        err,
-        `[manager/manager.service/updateManagerByManagerId] updateManagerByManagerId error!`,
-      );
+      this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }
 
-  async deleteDataByManagerId(managerId: string): Promise<IApiResult<Manager>> {
+  async deleteDataById(id: string): Promise<IApiResult<Manager>> {
     try {
-      const result = await this.managerRepository.deleteDataByManagerId(managerId);
+      const result = await this.managerRepository.deleteDataById(id);
       return convertSaved(result);
     } catch (err) {
-      this.logger.error(
-        err,
-        `[manager/manager.service/deleteManagerByManagerId] deleteManagerByManagerId error!`,
-      );
+      this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
       throw new CustomError(err.errorCode || ERROR_CODE.INTERNAL_SERVER_ERROR, err.message);
     }
   }

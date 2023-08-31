@@ -15,7 +15,7 @@ export class DeptRepository {
     private readonly logger: LoggerService,
   ) {}
 
-  async insertData(createDeptDto: CreateDeptDto): Promise<Dept> {
+  async createData(createDeptDto: CreateDeptDto): Promise<Dept> {
     try {
       const inserted = await this.deptRepo
         .createQueryBuilder()
@@ -28,7 +28,7 @@ export class DeptRepository {
       const result = plainToInstance(Dept, inserted.raw[0]);
       return result;
     } catch (err) {
-      this.logger.error(err, `[dept/dept.repository/insertData] insertData error!`);
+      this.logger.error(this.createData.name, err, 'createData error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
@@ -50,12 +50,12 @@ export class DeptRepository {
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[dept/dept.repository/findData] findData error!`);
+      this.logger.error(this.findData.name, err, 'findData error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
 
-  async findDataByDeptId(deptId: string): Promise<Dept> {
+  async findDataById(id: string): Promise<Dept> {
     try {
       const result = await this.deptRepo
         .createQueryBuilder()
@@ -68,47 +68,47 @@ export class DeptRepository {
           "Dept"."deleted_at"
           `,
         )
-        .where('"Dept"."dept_id" = :deptId', { deptId })
+        .where('"Dept"."dept_id" = :id', { id })
         .getRawOne();
 
       return result;
     } catch (err) {
-      this.logger.error(err, `[dept/dept.repository/findDataByDeptId] findDataByDeptId error!`);
+      this.logger.error(this.findDataById.name, err, 'findDataById error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
 
-  async updateDataByDeptId(deptId: string, updateDeptDto: UpdateDeptDto): Promise<Dept> {
+  async updateDataById(id: string, updateDeptDto: UpdateDeptDto): Promise<Dept> {
     try {
       const updated = await this.deptRepo
         .createQueryBuilder()
         .update()
         .set(updateDeptDto)
-        .where('"Dept"."dept_id" = :deptId', { deptId })
+        .where('"Dept"."dept_id" = :id', { id })
         .returning('*')
         .execute();
 
       const result = plainToInstance(Dept, updated.raw[0]);
       return result;
     } catch (err) {
-      this.logger.error(err, `[dept/dept.repository/updateDataByDeptId] updateDataByDeptId error!`);
+      this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
 
-  async deleteDataByDeptId(deptId: string): Promise<Dept> {
+  async deleteDataById(id: string): Promise<Dept> {
     try {
       const deleted = await this.deptRepo
         .createQueryBuilder()
         .softDelete()
-        .where('"Dept"."dept_id" = :deptId', { deptId })
+        .where('"Dept"."dept_id" = :id', { id })
         .returning('*')
         .execute();
 
       const result = plainToInstance(Dept, deleted.raw[0]);
       return result;
     } catch (err) {
-      this.logger.error(err, `[dept/dept.repository/deleteDataByDeptId] deleteDataByDeptId error!`);
+      this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
       throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
     }
   }
