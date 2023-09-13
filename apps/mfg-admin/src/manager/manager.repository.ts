@@ -1,8 +1,8 @@
-import { Manager } from '@app/database';
 import { Inject, Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
 
+import { Manager } from '@app/database';
 import { LoggerService } from '@app/common/logger';
 import { CustomError, ERROR_CODE } from '@app/common/error';
 import { CreateManagerDto, UpdateManagerDto } from './dto';
@@ -17,11 +17,13 @@ export class ManagerRepository {
 
   async createData(createManagerDto: CreateManagerDto): Promise<Manager> {
     try {
+      const { name, email, mgmt_item_id } = createManagerDto;
+
       const inserted = await this.managerRepo
         .createQueryBuilder()
         .insert()
         .into(Manager)
-        .values(createManagerDto)
+        .values({ name, email, mgmtItem: { mgmt_item_id } })
         .returning('*')
         .execute();
 
@@ -33,24 +35,13 @@ export class ManagerRepository {
     }
   }
 
-  async findData(): Promise<any[]> {
+  async findData(): Promise<Manager[]> {
     try {
       const result = await this.managerRepo
         .createQueryBuilder()
-        .select(
-          `
-          "Manager"."manager_id",
-          "Manager"."mgmt_item_id",
-          "MgmtItem"."mgmt_item_nm",
-          "Manager"."name",
-          "Manager"."email",
-          "Manager"."created_at",
-          "Manager"."updated_at",
-          "Manager"."deleted_at"
-          `,
-        )
-        .innerJoin(`Manager.mgmt_item_id`, 'MgmtItem')
-        .getRawMany();
+        .select()
+        .innerJoinAndSelect(`Manager.mgmtItem`, 'MgmtItem')
+        .getMany();
 
       return result;
     } catch (err) {
@@ -59,25 +50,14 @@ export class ManagerRepository {
     }
   }
 
-  async findDataById(id: string): Promise<any> {
+  async findDataById(id: string): Promise<Manager> {
     try {
       const result = await this.managerRepo
         .createQueryBuilder()
-        .select(
-          `
-          "Manager"."manager_id",
-          "Manager"."mgmt_item_id",
-          "MgmtItem"."mgmt_item_nm",
-          "Manager"."name",
-          "Manager"."email",
-          "Manager"."created_at",
-          "Manager"."updated_at",
-          "Manager"."deleted_at"
-          `,
-        )
-        .innerJoin(`Manager.mgmt_item_id`, 'MgmtItem')
+        .select()
+        .innerJoinAndSelect(`Manager.mgmtItem`, 'MgmtItem')
         .where('"Manager"."manager_id" = :id', { id })
-        .getRawOne();
+        .getOne();
 
       return result;
     } catch (err) {
@@ -88,10 +68,12 @@ export class ManagerRepository {
 
   async updateDataById(id: string, updateManagerDto: UpdateManagerDto): Promise<Manager> {
     try {
+      const { name, email } = updateManagerDto;
+
       const updated = await this.managerRepo
         .createQueryBuilder()
         .update()
-        .set(updateManagerDto)
+        .set({ name, email })
         .where('"Manager"."manager_id" = :id', { id })
         .returning('*')
         .execute();

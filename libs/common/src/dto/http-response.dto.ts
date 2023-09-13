@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IApiResult } from '@app/interfaces';
+
+import { IDataResult } from '@app/interfaces';
 
 const getResponseMessage = (method: string) => {
   switch (method.toUpperCase()) {
@@ -38,9 +39,9 @@ export class HttpResponseDto<T> {
     description: '결과 데이터',
     required: false,
   })
-  data?: IApiResult<T>;
+  data?: IDataResult<T>;
 
-  constructor(result: boolean, method: string, data?: IApiResult<T>) {
+  constructor(result: boolean, method: string, data?: IDataResult<T>) {
     this.result = result;
     this.message = getResponseMessage(method);
     this.data = data;

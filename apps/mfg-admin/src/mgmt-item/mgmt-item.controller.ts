@@ -11,14 +11,20 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags, ApiBody } from '@nestjs/swagger';
 
-import { MgmtItemService } from './mgmt-item.service';
 import { LoggerService } from '@app/common/logger';
 import { CustomApiResponse } from '@app/decorators';
-import { IApiResult } from '@app/interfaces';
-import { MgmtItemDto } from '@app/common/dto';
+import { IDataResult } from '@app/interfaces';
 import { MgmtItem } from '@app/database';
 import { CustomError, ERROR_CODE } from '@app/common/error';
-import { CreateMgmtItemDto, UpdateMgmtItemDto } from './dto';
+import { convertSaved } from '@app/utils';
+
+import { MgmtItemService } from './mgmt-item.service';
+import {
+  CreateMgmtItemDto,
+  FindMgmtItemDto,
+  SaveResultMgmtItemDto,
+  UpdateMgmtItemDto,
+} from './dto';
 
 @ApiTags('[관리항목] API')
 @Controller('mgmt-item')
@@ -39,11 +45,12 @@ export class MgmtItemController {
     isArray: false,
     description: '관리항목 생성 데이터',
   })
-  @CustomApiResponse(MgmtItemDto, HttpStatus.OK, '생성 성공')
+  @CustomApiResponse(SaveResultMgmtItemDto, HttpStatus.OK, '생성 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async createData(@Body() createMgmtItemDto: CreateMgmtItemDto) {
     try {
-      const result: IApiResult<MgmtItem> = await this.mgmtItemService.createData(createMgmtItemDto);
+      const mgmtItem: MgmtItem = await this.mgmtItemService.createData(createMgmtItemDto);
+      const result: IDataResult<SaveResultMgmtItemDto> = convertSaved(mgmtItem);
 
       return result;
     } catch (err) {
@@ -59,11 +66,15 @@ export class MgmtItemController {
     summary: '관리항목 전체조회',
     description: '관리항목정보를 조회한다.',
   })
-  @CustomApiResponse(MgmtItemDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(FindMgmtItemDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async findData() {
     try {
-      const result: IApiResult<any[]> = await this.mgmtItemService.findData();
+      const mgmtItems: MgmtItem[] = await this.mgmtItemService.findData();
+
+      const findMgmtItemDto: FindMgmtItemDto[] =
+        this.mgmtItemService.processingFindResult(mgmtItems);
+      const result: IDataResult<FindMgmtItemDto> = convertSaved(findMgmtItemDto);
 
       return result;
     } catch (err) {
@@ -78,11 +89,16 @@ export class MgmtItemController {
     description: 'UUID를 이용하여 특정 관리항목정보를 조회한다.',
   })
   @ApiParam({ name: 'id', required: true, description: '관리항목UUID' })
-  @CustomApiResponse(MgmtItemDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(FindMgmtItemDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async findDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<any> = await this.mgmtItemService.findDataById(id);
+      const mgmtItem: MgmtItem = await this.mgmtItemService.findDataById(id);
+
+      const findMgmtItemDto: FindMgmtItemDto[] = this.mgmtItemService.processingFindResult([
+        mgmtItem,
+      ]);
+      const result: IDataResult<FindMgmtItemDto> = convertSaved(findMgmtItemDto);
 
       return result;
     } catch (err) {
@@ -104,17 +120,15 @@ export class MgmtItemController {
     isArray: false,
     description: '수정할 관리항목 데이터',
   })
-  @CustomApiResponse(MgmtItemDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(SaveResultMgmtItemDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async updateDataById(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateMgmtItemDto: UpdateMgmtItemDto,
   ) {
     try {
-      const result: IApiResult<MgmtItem> = await this.mgmtItemService.updateDataById(
-        id,
-        updateMgmtItemDto,
-      );
+      const mgmtItem: MgmtItem = await this.mgmtItemService.updateDataById(id, updateMgmtItemDto);
+      const result: IDataResult<SaveResultMgmtItemDto> = convertSaved(mgmtItem);
 
       return result;
     } catch (err) {
@@ -131,11 +145,12 @@ export class MgmtItemController {
     description: '특정 관리항목정보를 삭제한다.',
   })
   @ApiParam({ name: 'id', required: true, description: '관리항목UUID' })
-  @CustomApiResponse(MgmtItemDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(SaveResultMgmtItemDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async deleteDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<MgmtItem> = await this.mgmtItemService.deleteDataById(id);
+      const mgmtItem: MgmtItem = await this.mgmtItemService.deleteDataById(id);
+      const result: IDataResult<SaveResultMgmtItemDto> = convertSaved(mgmtItem);
 
       return result;
     } catch (err) {

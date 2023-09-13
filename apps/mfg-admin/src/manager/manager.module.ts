@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 
+import { LibsModule } from '@app/libs';
+
 import { ManagerService } from './manager.service';
 import { ManagerController } from './manager.controller';
 import { ManagerRepository } from './manager.repository';
-import { LibsModule } from '@app/libs';
 
 @Module({
   imports: [LibsModule],

@@ -1,7 +1,7 @@
-import { IApiResult } from '@app/interfaces';
+import { IDataResult } from '@app/interfaces';
 
 const convertSaved = (saved: any) => {
-  const result: IApiResult<any> = { count: 0, rows: [] };
+  const result: IDataResult<any> = { count: 0, rows: [] };
 
   if (!saved) {
     return result;

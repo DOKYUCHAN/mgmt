@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
+import { LibsModule } from '@app/libs';
+
 import { MgmtTypeService } from './mgmt-type.service';
 import { MgmtTypeController } from './mgmt-type.controller';
 import { MgmtTypeRepository } from './mgmt-type.repository';
-import { LibsModule } from '@app/libs';
-
 @Module({
   imports: [LibsModule],
   controllers: [MgmtTypeController],

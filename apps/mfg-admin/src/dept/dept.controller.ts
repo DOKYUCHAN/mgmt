@@ -11,14 +11,15 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags, ApiBody } from '@nestjs/swagger';
 
-import { DeptService } from './dept.service';
 import { LoggerService } from '@app/common/logger';
 import { CustomApiResponse } from '@app/decorators';
-import { IApiResult } from '@app/interfaces';
-import { DeptDto } from '@app/common/dto';
+import { IDataResult } from '@app/interfaces';
 import { Dept } from '@app/database';
 import { CustomError, ERROR_CODE } from '@app/common/error';
-import { CreateDeptDto, UpdateDeptDto } from './dto';
+import { convertSaved } from '@app/utils';
+
+import { DeptService } from './dept.service';
+import { CreateDeptDto, UpdateDeptDto, FindDeptDto, SaveResultDeptDto } from './dto';
 
 @ApiTags('[부서] API')
 @Controller('dept')
@@ -33,11 +34,12 @@ export class DeptController {
     isArray: false,
     description: '부서 생성 데이터',
   })
-  @CustomApiResponse(DeptDto, HttpStatus.OK, '생성 성공')
+  @CustomApiResponse(SaveResultDeptDto, HttpStatus.OK, '생성 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async createData(@Body() createDeptDto: CreateDeptDto) {
     try {
-      const result: IApiResult<Dept> = await this.deptService.createData(createDeptDto);
+      const dept: Dept = await this.deptService.createData(createDeptDto);
+      const result: IDataResult<SaveResultDeptDto> = convertSaved(dept);
 
       return result;
     } catch (err) {
@@ -53,11 +55,12 @@ export class DeptController {
     summary: '부서 전체조회',
     description: '부서정보를 조회한다.',
   })
-  @CustomApiResponse(DeptDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(FindDeptDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async findData() {
     try {
-      const result: IApiResult<Dept[]> = await this.deptService.findData();
+      const depts: Dept[] = await this.deptService.findData();
+      const result: IDataResult<FindDeptDto> = convertSaved(depts);
 
       return result;
     } catch (err) {
@@ -72,11 +75,12 @@ export class DeptController {
     description: 'UUID를 이용하여 특정 부서정보를 조회한다.',
   })
   @ApiParam({ name: 'id', required: true, description: '부서UUID' })
-  @CustomApiResponse(DeptDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(FindDeptDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async findDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<Dept> = await this.deptService.findDataById(id);
+      const dept: Dept = await this.deptService.findDataById(id);
+      const result: IDataResult<FindDeptDto> = convertSaved(dept);
 
       return result;
     } catch (err) {
@@ -98,14 +102,15 @@ export class DeptController {
     isArray: false,
     description: '수정할 부서 데이터',
   })
-  @CustomApiResponse(DeptDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(SaveResultDeptDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async updateDataById(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateDeptDto: UpdateDeptDto,
   ) {
     try {
-      const result: IApiResult<Dept> = await this.deptService.updateDataById(id, updateDeptDto);
+      const dept: Dept = await this.deptService.updateDataById(id, updateDeptDto);
+      const result: IDataResult<SaveResultDeptDto> = convertSaved(dept);
 
       return result;
     } catch (err) {
@@ -122,11 +127,12 @@ export class DeptController {
     description: '특정 부서정보를 삭제한다.',
   })
   @ApiParam({ name: 'id', required: true, description: '부서UUID' })
-  @CustomApiResponse(DeptDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(SaveResultDeptDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async deleteDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<Dept> = await this.deptService.deleteDataById(id);
+      const dept: Dept = await this.deptService.deleteDataById(id);
+      const result: IDataResult<SaveResultDeptDto> = convertSaved(dept);
 
       return result;
     } catch (err) {

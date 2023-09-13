@@ -1,10 +1,11 @@
-import { Team } from '@app/database';
 import { Inject, Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
 
+import { Team } from '@app/database';
 import { LoggerService } from '@app/common/logger';
 import { CustomError, ERROR_CODE } from '@app/common/error';
+
 import { CreateTeamDto, UpdateTeamDto } from './dto';
 
 @Injectable()
@@ -17,11 +18,13 @@ export class TeamRepository {
 
   async createData(createTeamDto: CreateTeamDto): Promise<Team> {
     try {
+      const { team_nm, dept_id } = createTeamDto;
+
       const inserted = await this.teamRepo
         .createQueryBuilder()
         .insert()
         .into(Team)
-        .values(createTeamDto)
+        .values({ team_nm, dept: { dept_id } })
         .returning('*')
         .execute();
 
@@ -33,23 +36,13 @@ export class TeamRepository {
     }
   }
 
-  async findData(): Promise<any[]> {
+  async findData(): Promise<Team[]> {
     try {
       const result = await this.teamRepo
         .createQueryBuilder()
-        .select(
-          `
-          "Team"."team_id",
-          "Team"."dept_id",
-          "Dept"."dept_nm",
-          "Team"."team_nm",
-          "Team"."created_at",
-          "Team"."updated_at",
-          "Team"."deleted_at"
-          `,
-        )
-        .leftJoin(`Team.dept_id`, 'Dept')
-        .getRawMany();
+        .select()
+        .leftJoinAndSelect(`Team.dept`, 'Dept')
+        .getMany();
 
       return result;
     } catch (err) {
@@ -62,20 +55,10 @@ export class TeamRepository {
     try {
       const result = await this.teamRepo
         .createQueryBuilder()
-        .select(
-          `
-          "Team"."team_id",
-          "Team"."dept_id",
-          "Dept"."dept_nm",
-          "Team"."team_nm",
-          "Team"."created_at",
-          "Team"."updated_at",
-          "Team"."deleted_at"
-          `,
-        )
-        .leftJoin(`Team.dept_id`, 'Dept')
+        .select()
+        .leftJoinAndSelect(`Team.dept`, 'Dept')
         .where('"Team"."team_id" = :id', { id })
-        .getRawOne();
+        .getOne();
 
       return result;
     } catch (err) {
@@ -86,10 +69,12 @@ export class TeamRepository {
 
   async updateDataById(id: string, updateTeamDto: UpdateTeamDto): Promise<Team> {
     try {
+      const { team_nm, dept_id } = updateTeamDto;
+
       const updated = await this.teamRepo
         .createQueryBuilder()
         .update()
-        .set(updateTeamDto)
+        .set({ team_nm, dept: { dept_id } })
         .where('"Team"."team_id" = :id', { id })
         .returning('*')
         .execute();

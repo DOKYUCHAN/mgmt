@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { v4 as uuidv4 } from 'uuid';
 import { Exclude, Expose } from 'class-transformer';
-import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsDate, IsString, IsUUID } from 'class-validator';
 
 import { TeamSchema } from '@app/schemas';
+import { Dept } from '@app/database';
 
 @Exclude()
 export class TeamDto implements TeamSchema {
@@ -17,16 +18,6 @@ export class TeamDto implements TeamSchema {
   @IsUUID()
   team_id: string;
 
-  @ApiProperty({
-    type: 'uuid',
-    description: '부서 UUID',
-    required: true,
-    example: uuidv4(),
-  })
-  @Expose()
-  @IsUUID()
-  dept_id: string;
-
   @ApiProperty({ type: 'string', description: '팀명', required: true })
   @Expose()
   @IsString()
@@ -38,7 +29,6 @@ export class TeamDto implements TeamSchema {
     example: new Date(),
   })
   @Expose()
-  @IsOptional()
   @IsDate()
   created_at: Date;
 
@@ -48,7 +38,6 @@ export class TeamDto implements TeamSchema {
     example: new Date(),
   })
   @Expose()
-  @IsOptional()
   @IsDate()
   updated_at: Date;
 
@@ -58,7 +47,9 @@ export class TeamDto implements TeamSchema {
     example: new Date(),
   })
   @Expose()
-  @IsOptional()
   @IsDate()
   deleted_at: Date;
+
+  // 📌 Relational Variables
+  dept: Dept;
 }

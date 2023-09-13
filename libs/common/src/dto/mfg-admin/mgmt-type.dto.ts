@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { v4 as uuidv4 } from 'uuid';
 import { Exclude, Expose } from 'class-transformer';
-import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsDate, IsString, IsUUID } from 'class-validator';
 
 import { MgmtTypeSchema } from '@app/schemas';
 
@@ -28,7 +28,6 @@ export class MgmtTypeDto implements MgmtTypeSchema {
     example: new Date(),
   })
   @Expose()
-  @IsOptional()
   @IsDate()
   created_at: Date;
 
@@ -38,7 +37,6 @@ export class MgmtTypeDto implements MgmtTypeSchema {
     example: new Date(),
   })
   @Expose()
-  @IsOptional()
   @IsDate()
   updated_at: Date;
 
@@ -48,7 +46,6 @@ export class MgmtTypeDto implements MgmtTypeSchema {
     example: new Date(),
   })
   @Expose()
-  @IsOptional()
   @IsDate()
   deleted_at: Date;
 }

@@ -1,10 +1,11 @@
-import { MgmtItem } from '@app/database';
 import { Inject, Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
 
+import { MgmtItem } from '@app/database';
 import { LoggerService } from '@app/common/logger';
 import { CustomError, ERROR_CODE } from '@app/common/error';
+
 import { CreateMgmtItemDto, UpdateMgmtItemDto } from './dto';
 
 @Injectable()
@@ -17,11 +18,13 @@ export class MgmtItemRepository {
 
   async createData(createMgmtItemDto: CreateMgmtItemDto): Promise<MgmtItem> {
     try {
+      const { mgmt_item_nm, partner, team_id, mgmt_type_id } = createMgmtItemDto;
+
       const inserted = await this.mgmtItemRepo
         .createQueryBuilder()
         .insert()
         .into(MgmtItem)
-        .values(createMgmtItemDto)
+        .values({ mgmt_item_nm, partner, team: { team_id }, mgmtType: { mgmt_type_id } })
         .returning('*')
         .execute();
 
@@ -33,27 +36,14 @@ export class MgmtItemRepository {
     }
   }
 
-  async findData(): Promise<any[]> {
+  async findData(): Promise<MgmtItem[]> {
     try {
       const result = await this.mgmtItemRepo
         .createQueryBuilder()
-        .select(
-          `
-          "MgmtItem"."mgmt_item_id",
-          "MgmtItem"."team_id",
-          "Team"."team_nm",
-          "MgmtItem"."mgmt_type_id",
-          "MgmtType"."mgmt_type_nm",
-          "MgmtItem"."partner",
-          "MgmtItem"."mgmt_item_nm",
-          "MgmtItem"."created_at",
-          "MgmtItem"."updated_at",
-          "MgmtItem"."deleted_at"
-          `,
-        )
-        .innerJoin(`MgmtItem.team_id`, 'Team')
-        .innerJoin(`MgmtItem.mgmt_type_id`, 'MgmtType')
-        .getRawMany();
+        .select()
+        .innerJoinAndSelect(`MgmtItem.team`, 'Team')
+        .innerJoinAndSelect(`MgmtItem.mgmtType`, 'MgmtType')
+        .getMany();
 
       return result;
     } catch (err) {
@@ -62,28 +52,15 @@ export class MgmtItemRepository {
     }
   }
 
-  async findDataById(id: string): Promise<any> {
+  async findDataById(id: string): Promise<MgmtItem> {
     try {
       const result = await this.mgmtItemRepo
         .createQueryBuilder()
-        .select(
-          `
-          "MgmtItem"."mgmt_item_id",
-          "MgmtItem"."team_id",
-          "Team"."team_nm",
-          "MgmtItem"."mgmt_type_id",
-          "MgmtType"."mgmt_type_nm",
-          "MgmtItem"."partner",
-          "MgmtItem"."mgmt_item_nm",
-          "MgmtItem"."created_at",
-          "MgmtItem"."updated_at",
-          "MgmtItem"."deleted_at"
-          `,
-        )
-        .innerJoin(`MgmtItem.team_id`, 'Team')
-        .innerJoin(`MgmtItem.mgmt_type_id`, 'MgmtType')
+        .select()
+        .innerJoinAndSelect(`MgmtItem.team`, 'Team')
+        .innerJoinAndSelect(`MgmtItem.mgmtType`, 'MgmtType')
         .where('"MgmtItem"."mgmt_item_id" = :id', { id })
-        .getRawOne();
+        .getOne();
 
       return result;
     } catch (err) {
@@ -94,10 +71,12 @@ export class MgmtItemRepository {
 
   async updateDataById(id: string, updateMgmtItemDto: UpdateMgmtItemDto): Promise<MgmtItem> {
     try {
+      const { mgmt_item_nm, partner, mgmt_type_id } = updateMgmtItemDto;
+
       const updated = await this.mgmtItemRepo
         .createQueryBuilder()
         .update()
-        .set(updateMgmtItemDto)
+        .set({ mgmt_item_nm, partner, mgmtType: { mgmt_type_id } })
         .where('"MgmtItem"."mgmt_item_id" = :id', { id })
         .returning('*')
         .execute();

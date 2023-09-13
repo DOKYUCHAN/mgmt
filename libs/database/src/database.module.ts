@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+
 import { ConfigModule, ConfigService } from '@app/common/config';
-import { Dept, Team, MgmtType, MgmtItem, Manager } from '@app/database/entities';
-import { repoProvider } from './repo.prorivder.';
 import { ENVIRONMENT } from '@app/constants';
+
+import { getEntities } from './entities';
+import { repoProvider } from './repo.prorivder.';
 
 @Module({
   imports: [ConfigModule],
@@ -23,7 +25,7 @@ import { ENVIRONMENT } from '@app/constants';
           database: database.DB_NAME,
           synchronize: false,
           logging: appConfig.ENV === ENVIRONMENT.LOCAL,
-          entities: [Dept, Team, MgmtType, MgmtItem, Manager], // build가 된 파일을 기준으로하기 때문에 entity의 경로를 js로 해주어야 함
+          entities: getEntities(), // build가 된 파일을 기준으로하기 때문에 entity의 경로를 js로 해주어야 함
         });
 
         return dataSource.initialize();

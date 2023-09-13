@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService as ConfigServiceInNest } from '@nestjs/config';
+
 import { TConfiguration, TAppConfig, TDatabaseConfig } from '@app/types';
 
 @Injectable()

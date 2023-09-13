@@ -11,20 +11,22 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags, ApiBody } from '@nestjs/swagger';
 
-import { ManagerService } from './manager.service';
 import { LoggerService } from '@app/common/logger';
 import { CustomApiResponse } from '@app/decorators';
-import { IApiResult } from '@app/interfaces';
+import { IDataResult } from '@app/interfaces';
 import { ManagerDto } from '@app/common/dto';
 import { Manager } from '@app/database';
+import { convertSaved } from '@app/utils';
 import { CustomError, ERROR_CODE } from '@app/common/error';
-import { CreateManagerDto, UpdateManagerDto } from './dto';
+
+import { ManagerService } from './manager.service';
+import { CreateManagerDto, FindManagerDto, SaveResultManagerDto, UpdateManagerDto } from './dto';
 
 @ApiTags('[담당자] API')
 @Controller('manager')
 export class ManagerController {
   constructor(
-    private readonly mgmtItemService: ManagerService,
+    private readonly managerService: ManagerService,
     private readonly logger: LoggerService,
   ) {}
 
@@ -43,7 +45,8 @@ export class ManagerController {
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async createData(@Body() createManagerDto: CreateManagerDto) {
     try {
-      const result: IApiResult<Manager> = await this.mgmtItemService.createData(createManagerDto);
+      const manager: Manager = await this.managerService.createData(createManagerDto);
+      const result: IDataResult<SaveResultManagerDto> = convertSaved(manager);
 
       return result;
     } catch (err) {
@@ -63,7 +66,10 @@ export class ManagerController {
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async findData() {
     try {
-      const result: IApiResult<any[]> = await this.mgmtItemService.findData();
+      const managers: Manager[] = await this.managerService.findData();
+
+      const findManagerDto: FindManagerDto[] = this.managerService.processingFindResult(managers);
+      const result: IDataResult<FindManagerDto> = convertSaved(findManagerDto);
 
       return result;
     } catch (err) {
@@ -82,7 +88,10 @@ export class ManagerController {
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async findDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<any> = await this.mgmtItemService.findDataById(id);
+      const manager: Manager = await this.managerService.findDataById(id);
+
+      const findManagerDto: FindManagerDto[] = this.managerService.processingFindResult([manager]);
+      const result: IDataResult<FindManagerDto> = convertSaved(findManagerDto);
 
       return result;
     } catch (err) {
@@ -111,10 +120,8 @@ export class ManagerController {
     @Body() updateManagerDto: UpdateManagerDto,
   ) {
     try {
-      const result: IApiResult<Manager> = await this.mgmtItemService.updateDataById(
-        id,
-        updateManagerDto,
-      );
+      const manager: Manager = await this.managerService.updateDataById(id, updateManagerDto);
+      const result: IDataResult<SaveResultManagerDto> = convertSaved(manager);
 
       return result;
     } catch (err) {
@@ -135,7 +142,8 @@ export class ManagerController {
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async deleteDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<Manager> = await this.mgmtItemService.deleteDataById(id);
+      const manager: Manager = await this.managerService.deleteDataById(id);
+      const result: IDataResult<SaveResultManagerDto> = convertSaved(manager);
 
       return result;
     } catch (err) {

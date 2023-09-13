@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { v4 as uuidv4 } from 'uuid';
 import { Exclude, Expose } from 'class-transformer';
-import { IsDate, IsOptional, IsString, IsUUID, IsEmail } from 'class-validator';
+import { IsDate, IsString, IsUUID, IsEmail } from 'class-validator';
 
 import { ManagerSchema } from '@app/schemas';
+import { MgmtItem } from '@app/database';
 
 @Exclude()
 export class ManagerDto implements ManagerSchema {
@@ -16,16 +17,6 @@ export class ManagerDto implements ManagerSchema {
   @Expose()
   @IsUUID()
   manager_id: string;
-
-  @ApiProperty({
-    type: 'uuid',
-    description: '관리항목 UUID',
-    required: true,
-    example: uuidv4(),
-  })
-  @Expose()
-  @IsUUID()
-  mgmt_item_id: string;
 
   @ApiProperty({ type: 'string', description: '담당자', required: true })
   @Expose()
@@ -43,7 +34,6 @@ export class ManagerDto implements ManagerSchema {
     example: new Date(),
   })
   @Expose()
-  @IsOptional()
   @IsDate()
   created_at: Date;
 
@@ -53,7 +43,6 @@ export class ManagerDto implements ManagerSchema {
     example: new Date(),
   })
   @Expose()
-  @IsOptional()
   @IsDate()
   updated_at: Date;
 
@@ -63,7 +52,9 @@ export class ManagerDto implements ManagerSchema {
     example: new Date(),
   })
   @Expose()
-  @IsOptional()
   @IsDate()
   deleted_at: Date;
+
+  // 📌 Relational Variables
+  mgmtItem: MgmtItem;
 }

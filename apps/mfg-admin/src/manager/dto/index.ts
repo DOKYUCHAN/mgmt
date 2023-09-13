@@ -1,2 +1,7 @@
-export * from './create-manager.dto';
-export * from './update-manager.dto';
+// request
+export * from './req/create-manager.dto';
+export * from './req/update-manager.dto';
+
+// response
+export * from './res/find-manager.dto';
+export * from './res/save-result-manager.dto';

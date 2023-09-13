@@ -1,10 +1,11 @@
-import { Dept } from '@app/database';
 import { Inject, Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
 
+import { Dept } from '@app/database';
 import { LoggerService } from '@app/common/logger';
 import { CustomError, ERROR_CODE } from '@app/common/error';
+
 import { CreateDeptDto, UpdateDeptDto } from './dto';
 
 @Injectable()
@@ -17,11 +18,13 @@ export class DeptRepository {
 
   async createData(createDeptDto: CreateDeptDto): Promise<Dept> {
     try {
+      const { dept_nm } = createDeptDto;
+
       const inserted = await this.deptRepo
         .createQueryBuilder()
         .insert()
         .into(Dept)
-        .values(createDeptDto)
+        .values({ dept_nm })
         .returning('*')
         .execute();
 
@@ -35,18 +38,7 @@ export class DeptRepository {
 
   async findData(): Promise<Dept[]> {
     try {
-      const result = await this.deptRepo
-        .createQueryBuilder()
-        .select(
-          `
-          "Dept"."dept_id",
-          "Dept"."dept_nm",
-          "Dept"."created_at",
-          "Dept"."updated_at",
-          "Dept"."deleted_at"
-          `,
-        )
-        .getRawMany();
+      const result = await this.deptRepo.createQueryBuilder().select().getMany();
 
       return result;
     } catch (err) {
@@ -59,17 +51,9 @@ export class DeptRepository {
     try {
       const result = await this.deptRepo
         .createQueryBuilder()
-        .select(
-          `
-          "Dept"."dept_id",
-          "Dept"."dept_nm",
-          "Dept"."created_at",
-          "Dept"."updated_at",
-          "Dept"."deleted_at"
-          `,
-        )
+        .select()
         .where('"Dept"."dept_id" = :id', { id })
-        .getRawOne();
+        .getOne();
 
       return result;
     } catch (err) {
@@ -80,10 +64,12 @@ export class DeptRepository {
 
   async updateDataById(id: string, updateDeptDto: UpdateDeptDto): Promise<Dept> {
     try {
+      const { dept_nm } = updateDeptDto;
+
       const updated = await this.deptRepo
         .createQueryBuilder()
         .update()
-        .set(updateDeptDto)
+        .set({ dept_nm })
         .where('"Dept"."dept_id" = :id', { id })
         .returning('*')
         .execute();

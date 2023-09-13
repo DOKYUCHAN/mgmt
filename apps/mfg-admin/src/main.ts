@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { SERVER_NAME } from '@app/constants';
 import { LoggerService } from '@app/common/logger';
 import { ConfigService } from '@app/common/config';
+
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   process.env.SERVER_NAME = SERVER_NAME.MGMT;

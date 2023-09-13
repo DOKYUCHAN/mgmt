@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 
+import { LibsModule } from '@app/libs';
+
 import { DeptService } from './dept.service';
 import { DeptController } from './dept.controller';
 import { DeptRepository } from './dept.repository';
-import { LibsModule } from '@app/libs';
 
 @Module({
   imports: [LibsModule],

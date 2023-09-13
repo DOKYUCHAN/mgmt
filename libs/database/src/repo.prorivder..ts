@@ -1,5 +1,6 @@
 import { DataSource } from 'typeorm';
-import { Dept, Team, MgmtType, MgmtItem, Manager } from '@app/database/entities';
+
+import { Dept, Team, MgmtType, MgmtItem, Manager } from './entities';
 
 export const repoProvider = [
   {

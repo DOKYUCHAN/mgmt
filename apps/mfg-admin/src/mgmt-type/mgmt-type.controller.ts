@@ -11,14 +11,20 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags, ApiBody } from '@nestjs/swagger';
 
-import { MgmtTypeService } from './mgmt-type.service';
 import { LoggerService } from '@app/common/logger';
 import { CustomApiResponse } from '@app/decorators';
-import { IApiResult } from '@app/interfaces';
-import { MgmtTypeDto } from '@app/common/dto';
+import { IDataResult } from '@app/interfaces';
 import { MgmtType } from '@app/database';
+import { convertSaved } from '@app/utils';
 import { CustomError, ERROR_CODE } from '@app/common/error';
-import { CreateMgmtTypeDto, UpdateMgmtTypeDto } from './dto';
+
+import { MgmtTypeService } from './mgmt-type.service';
+import {
+  CreateMgmtTypeDto,
+  FindMgmtTypeDto,
+  SaveResultMgmtTypeDto,
+  UpdateMgmtTypeDto,
+} from './dto';
 
 @ApiTags('[관리유형] API')
 @Controller('mgmt-type')
@@ -39,11 +45,12 @@ export class MgmtTypeController {
     isArray: false,
     description: '관리유형 생성 데이터',
   })
-  @CustomApiResponse(MgmtTypeDto, HttpStatus.OK, '생성 성공')
+  @CustomApiResponse(SaveResultMgmtTypeDto, HttpStatus.OK, '생성 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async createData(@Body() createMgmtTypeDto: CreateMgmtTypeDto) {
     try {
-      const result: IApiResult<MgmtType> = await this.mgmtTypeService.createData(createMgmtTypeDto);
+      const mgmtType: MgmtType = await this.mgmtTypeService.createData(createMgmtTypeDto);
+      const result: IDataResult<SaveResultMgmtTypeDto> = convertSaved(mgmtType);
 
       return result;
     } catch (err) {
@@ -59,11 +66,12 @@ export class MgmtTypeController {
     summary: '관리유형 전체조회',
     description: '관리유형정보를 조회한다.',
   })
-  @CustomApiResponse(MgmtTypeDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(FindMgmtTypeDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async findData() {
     try {
-      const result: IApiResult<MgmtType[]> = await this.mgmtTypeService.findData();
+      const mgmtTypes: MgmtType[] = await this.mgmtTypeService.findData();
+      const result: IDataResult<FindMgmtTypeDto> = convertSaved(mgmtTypes);
 
       return result;
     } catch (err) {
@@ -78,11 +86,12 @@ export class MgmtTypeController {
     description: 'UUID를 이용하여 특정 관리유형정보를 조회한다.',
   })
   @ApiParam({ name: 'id', required: true, description: '관리유형UUID' })
-  @CustomApiResponse(MgmtTypeDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(FindMgmtTypeDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async findDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<MgmtType> = await this.mgmtTypeService.findDataById(id);
+      const mgmtType: MgmtType = await this.mgmtTypeService.findDataById(id);
+      const result: IDataResult<FindMgmtTypeDto> = convertSaved(mgmtType);
 
       return result;
     } catch (err) {
@@ -104,17 +113,15 @@ export class MgmtTypeController {
     isArray: false,
     description: '수정할 관리유형 데이터',
   })
-  @CustomApiResponse(MgmtTypeDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(SaveResultMgmtTypeDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async updateDataById(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateMgmtTypeDto: UpdateMgmtTypeDto,
   ) {
     try {
-      const result: IApiResult<MgmtType> = await this.mgmtTypeService.updateDataById(
-        id,
-        updateMgmtTypeDto,
-      );
+      const mgmtType: MgmtType = await this.mgmtTypeService.updateDataById(id, updateMgmtTypeDto);
+      const result: IDataResult<SaveResultMgmtTypeDto> = convertSaved(mgmtType);
 
       return result;
     } catch (err) {
@@ -131,11 +138,12 @@ export class MgmtTypeController {
     description: '특정 관리유형정보를 삭제한다.',
   })
   @ApiParam({ name: 'id', required: true, description: '관리유형UUID' })
-  @CustomApiResponse(MgmtTypeDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(SaveResultMgmtTypeDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async deleteDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<MgmtType> = await this.mgmtTypeService.deleteDataById(id);
+      const mgmtType: MgmtType = await this.mgmtTypeService.deleteDataById(id);
+      const result: IDataResult<SaveResultMgmtTypeDto> = convertSaved(mgmtType);
 
       return result;
     } catch (err) {

@@ -4,7 +4,7 @@ require('dotenv').config();
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 
-import { Dept, Team, MgmtType, MgmtItem, Manager } from '@app/database/entities';
+import { getEntities } from './entities';
 
 // migration용 config
 // 2개 이상의 dataSource를 export할 경우 migration 쪽에서 error가 발생, 1개만 export 할 것
@@ -17,7 +17,7 @@ const options: DataSourceOptions & SeederOptions = {
   database: process.env.DB_NAME,
   synchronize: false,
   logging: true,
-  entities: [Dept, Team, MgmtType, MgmtItem, Manager],
+  entities: getEntities(),
   migrations: [__dirname + '/migrations/*.ts'],
   seeds: [__dirname + '\\seeders\\.seeder.ts'],
 };

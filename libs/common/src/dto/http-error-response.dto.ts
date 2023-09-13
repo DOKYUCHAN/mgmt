@@ -1,4 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
+
 import { TErrorCode, CustomError, ERROR_CODE, ERROR_CODE_STATUS_MAPPING } from '../error';
 
 const getErrorStatusCode = (errorCode: TErrorCode) => ERROR_CODE_STATUS_MAPPING[errorCode];

@@ -11,14 +11,15 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiTags, ApiBody } from '@nestjs/swagger';
 
-import { TeamService } from './team.service';
 import { LoggerService } from '@app/common/logger';
 import { CustomApiResponse } from '@app/decorators';
-import { IApiResult } from '@app/interfaces';
-import { TeamDto } from '@app/common/dto';
+import { IDataResult } from '@app/interfaces';
 import { Team } from '@app/database';
+import { convertSaved } from '@app/utils';
 import { CustomError, ERROR_CODE } from '@app/common/error';
-import { CreateTeamDto, UpdateTeamDto } from './dto';
+
+import { TeamService } from './team.service';
+import { CreateTeamDto, FindTeamDto, SaveResultTeamDto, UpdateTeamDto } from './dto';
 
 @ApiTags('[팀] API')
 @Controller('team')
@@ -33,11 +34,12 @@ export class TeamController {
     isArray: false,
     description: '팀 생성 데이터',
   })
-  @CustomApiResponse(TeamDto, HttpStatus.OK, '생성 성공')
+  @CustomApiResponse(SaveResultTeamDto, HttpStatus.OK, '생성 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async createData(@Body() createTeamDto: CreateTeamDto) {
     try {
-      const result: IApiResult<Team> = await this.teamService.createData(createTeamDto);
+      const team: Team = await this.teamService.createData(createTeamDto);
+      const result: IDataResult<SaveResultTeamDto> = convertSaved(team);
 
       return result;
     } catch (err) {
@@ -53,11 +55,14 @@ export class TeamController {
     summary: '팀 전체조회',
     description: '팀정보를 조회한다.',
   })
-  @CustomApiResponse(TeamDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(FindTeamDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async findData() {
     try {
-      const result: IApiResult<any[]> = await this.teamService.findData();
+      const teams: Team[] = await this.teamService.findData();
+
+      const findTeamDto: FindTeamDto[] = this.teamService.processingFindResult(teams);
+      const result: IDataResult<FindTeamDto> = convertSaved(findTeamDto);
 
       return result;
     } catch (err) {
@@ -72,11 +77,14 @@ export class TeamController {
     description: 'UUID를 이용하여 특정 팀정보를 조회한다.',
   })
   @ApiParam({ name: 'id', required: true, description: '팀UUID' })
-  @CustomApiResponse(TeamDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(FindTeamDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async findDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<any> = await this.teamService.findDataById(id);
+      const team: Team = await this.teamService.findDataById(id);
+
+      const findTeamDto: FindTeamDto[] = this.teamService.processingFindResult([team]);
+      const result: IDataResult<FindTeamDto> = convertSaved(findTeamDto);
 
       return result;
     } catch (err) {
@@ -98,14 +106,15 @@ export class TeamController {
     isArray: false,
     description: '수정할 팀 데이터',
   })
-  @CustomApiResponse(TeamDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(SaveResultTeamDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async updateDataById(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTeamDto: UpdateTeamDto,
   ) {
     try {
-      const result: IApiResult<Team> = await this.teamService.updateDataById(id, updateTeamDto);
+      const team: Team = await this.teamService.updateDataById(id, updateTeamDto);
+      const result: IDataResult<SaveResultTeamDto> = convertSaved(team);
 
       return result;
     } catch (err) {
@@ -122,11 +131,12 @@ export class TeamController {
     description: '특정 팀정보를 삭제한다.',
   })
   @ApiParam({ name: 'id', required: true, description: '팀UUID' })
-  @CustomApiResponse(TeamDto, HttpStatus.OK, '조회 성공')
+  @CustomApiResponse(SaveResultTeamDto, HttpStatus.OK, '조회 성공')
   @CustomApiResponse(undefined, HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   async deleteDataById(@Param('id', ParseUUIDPipe) id: string) {
     try {
-      const result: IApiResult<Team> = await this.teamService.deleteDataById(id);
+      const team: Team = await this.teamService.deleteDataById(id);
+      const result: IDataResult<SaveResultTeamDto> = convertSaved(team);
 
       return result;
     } catch (err) {
