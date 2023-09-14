@@ -1,0 +1,25 @@
+{
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@app/common/(.*)": "<rootDir>/../libs/common/src/$1",
+    "@app/common": "<rootDir>/../libs/common/src",
+    "@app/database/(.*)": "<rootDir>/../libs/database/src/$1",
+    "@app/database": "<rootDir>/../libs/database/src",
+    "@app/types/(.*)": "<rootDir>/../libs/types/src/$1",
+    "@app/types": "<rootDir>/../libs/types/src",
+    "@app/constants/(.*)": "<rootDir>/../libs/constants/src/$1",
+    "@app/constants": "<rootDir>/../libs/constants/src",
+    "@app/schemas/(.*)": "<rootDir>/../libs/schemas/src/$1",
+    "@app/schemas": "<rootDir>/../libs/schemas/src"
+  }
+}
