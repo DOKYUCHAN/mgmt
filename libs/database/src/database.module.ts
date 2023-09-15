@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 import { ConfigModule, ConfigService } from '@app/common/config';
 import { ENVIRONMENT } from '@app/constants';
 
-import { getEntities } from './entities';
+import { Dept, Team, MgmtType, MgmtItem, Manager } from './entities';
 import { repoProvider } from './repo.prorivder.';
 
 @Module({
@@ -25,7 +25,7 @@ import { repoProvider } from './repo.prorivder.';
           database: database.DB_NAME,
           synchronize: false,
           logging: appConfig.ENV === ENVIRONMENT.LOCAL,
-          entities: getEntities(), // build가 된 파일을 기준으로하기 때문에 entity의 경로를 js로 해주어야 함
+          entities: [Dept, Team, MgmtType, MgmtItem, Manager],
         });
 
         return dataSource.initialize();
