@@ -4,7 +4,9 @@ import { Repository } from 'typeorm';
 
 import { Manager } from '@app/database';
 import { LoggerService } from '@app/common/logger';
-import { CustomError, ERROR_CODE } from '@app/common/error';
+import { CustomError } from '@app/common/error';
+import { getDBErrorCode } from '@app/utils';
+
 import { CreateManagerDto, UpdateManagerDto } from './dto';
 
 @Injectable()
@@ -31,7 +33,7 @@ export class ManagerRepository {
       return result;
     } catch (err) {
       this.logger.error(this.createData.name, err, 'createData error!');
-      throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
+      throw new CustomError(getDBErrorCode(err), err.message);
     }
   }
 
@@ -46,7 +48,7 @@ export class ManagerRepository {
       return result;
     } catch (err) {
       this.logger.error(this.findData.name, err, 'findData error!');
-      throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
+      throw new CustomError(getDBErrorCode(err), err.message);
     }
   }
 
@@ -62,7 +64,7 @@ export class ManagerRepository {
       return result;
     } catch (err) {
       this.logger.error(this.findDataById.name, err, 'findDataById error!');
-      throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
+      throw new CustomError(getDBErrorCode(err), err.message);
     }
   }
 
@@ -82,7 +84,7 @@ export class ManagerRepository {
       return result;
     } catch (err) {
       this.logger.error(this.updateDataById.name, err, 'updateDataById error!');
-      throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
+      throw new CustomError(getDBErrorCode(err), err.message);
     }
   }
 
@@ -99,7 +101,7 @@ export class ManagerRepository {
       return result;
     } catch (err) {
       this.logger.error(this.deleteDataById.name, err, 'deleteDataById error!');
-      throw new CustomError(ERROR_CODE.DB_ERROR, err.message);
+      throw new CustomError(getDBErrorCode(err), err.message);
     }
   }
 }

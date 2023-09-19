@@ -24,6 +24,12 @@ export const CustomApiResponse = <TModel extends Type<any>>(
                   description: '결과 여부',
                   example: true,
                 },
+                code: {
+                  type: 'string',
+                  nullable: false,
+                  description: '결과 코드',
+                  example: 'OK',
+                },
                 message: {
                   type: 'string',
                   nullable: false,
@@ -70,6 +76,12 @@ export const CustomApiResponse = <TModel extends Type<any>>(
                   nullable: false,
                   description: '결과 여부',
                   example: false,
+                },
+                code: {
+                  type: 'string',
+                  nullable: false,
+                  description: '결과 코드',
+                  example: 'DEFINED_ERROR',
                 },
                 message: {
                   type: 'string',
