@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { IDataResult } from '@app/interfaces';
 
-const getResponseMessage = (method: string) => {
+const getResMessage = (method: string) => {
   switch (method.toUpperCase()) {
     case 'POST':
       return '생성 성공';
@@ -29,6 +29,13 @@ export class HttpResponseDto<T> {
 
   @ApiProperty({
     type: 'string',
+    description: '결과 코드',
+    required: true,
+  })
+  code: string;
+
+  @ApiProperty({
+    type: 'string',
     description: '결과 메시지',
     required: true,
   })
@@ -43,7 +50,8 @@ export class HttpResponseDto<T> {
 
   constructor(result: boolean, method: string, data?: IDataResult<T>) {
     this.result = result;
-    this.message = getResponseMessage(method);
+    this.code = 'OK';
+    this.message = getResMessage(method);
     this.data = data;
   }
 }
